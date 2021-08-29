@@ -1,3 +1,7 @@
 nimcache/
 nimblecache/
 htmldocs/
+.vscode/
+cacert.pem
+fortemps
+fortemps.exe

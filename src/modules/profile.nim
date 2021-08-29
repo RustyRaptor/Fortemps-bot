@@ -1,6 +1,6 @@
 # TODO: Clean up code
 
-cmd.addSlash("profile", guildID = "878838865035681833") do (server: string, firstname: string, surname: string):
+cmd.addSlash("profile", guildID = &"{gid}") do (server: string, firstname: string, surname: string):
     ## Grabs FFXIV basic details
     await discord.api.createInteractionResponse(i.id, i.token, 
         InteractionResponse(
@@ -9,7 +9,7 @@ cmd.addSlash("profile", guildID = "878838865035681833") do (server: string, firs
     )
 
     var
-        search_url = fmt"https://xivapi.com/character/search?name={firstname.strip()}%20{surname.strip()}&server={server.strip()}&private_key=342a2277e96a46ffbf81c8bb90201ed0b29f5344a1c8488f82b3588be25a4927"
+        search_url = fmt"https://xivapi.com/character/search?name={firstname.strip()}%20{surname.strip()}&server={server.strip()}&private_key={api_token}"
         search_content = waitFor client.getContent(search_url)
         search_parsed_json = search_content.parseJson()
         results = search_parsed_json["Results"]
@@ -26,7 +26,7 @@ cmd.addSlash("profile", guildID = "878838865035681833") do (server: string, firs
     else:
         var
             user_id = first_result["ID"]
-            profile_url = fmt"https://xivapi.com/character/{user_id}?private_key=342a2277e96a46ffbf81c8bb90201ed0b29f5344a1c8488f82b3588be25a4927"
+            profile_url = fmt"https://xivapi.com/character/{user_id}?private_key={api_token}"
             content = waitFor client.getContent(profile_url)
             parsed_json = content.parseJson()
             character = parsed_json["Character"]
@@ -36,7 +36,7 @@ cmd.addSlash("profile", guildID = "878838865035681833") do (server: string, firs
             portrait_url = character["Portrait"].getStr()
             level = active_class_job["Level"].getInt()
             job_name = unlocked_state["Name"].getStr()
-            desc_string = fmt"Level **{level}**, **{job_name}**"
+            desc_string = fmt"Level **{level} {job_name}**"
 
         embed = Embed(
             title: some(char_name),
