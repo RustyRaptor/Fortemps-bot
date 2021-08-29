@@ -11,6 +11,12 @@ import dimscmd/interactionUtils
 
 echo("Fortemps is loading!")
 
+var 
+    file: TaintedString
+    config: JsonNode 
+    token: string
+    api_token: string
+    gid: string
 # Load config here
 
 if fileExists("config.json") == false:
@@ -23,16 +29,17 @@ if fileExists("config.json") == false:
     let config_json = %*{"discord_token": discord_token, "xivapi_token": xivapi_token, "guild_id": guild_id}
     writeFile("config.json", $config_json)
 
-var 
+try:
     file = readFile("config.json")
-    try:
-        config = file.parseJson()
-        token = config["discord_token"].getStr()
-        api_token = config["xivapi_token"].getStr()
-        gid = config["guild_id"].getStr()
-    except:
-        echo("ERROR: Something is wrong with your config file. Try deleting it and run the program again to initialize it.")
+    config = file.parseJson()
+    token = config["discord_token"].getStr()
+    api_token = config["xivapi_token"].getStr()
+    gid = config["guild_id"].getStr()
+except:
+    echo("ERROR: Something is wrong with your config file. Try deleting it and run the program again to initialize it.")
+    quit(1)
 
+echo(token)
 let discord = newDiscordClient(token)
 let client = newAsyncHttpClient()
 var cmd = discord.newHandler()
