@@ -5,7 +5,7 @@ author        = "Ziad and Nat Diaz, former author: Reo_ar"
 description   = "Bot"
 license       = "MIT"
 srcDir        = "src"
-bin = @["Fortemps"]
+bin = @["fortemps"]
 
 # Dependencies
 
