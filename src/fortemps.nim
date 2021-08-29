@@ -25,10 +25,13 @@ if fileExists("config.json") == false:
 
 var 
     file = readFile("config.json")
-    config = file.parseJson()
-    token = config["discord_token"].getStr()
-    api_token = config["xivapi_token"].getStr()
-    gid = config["guild_id"].getStr()
+    try:
+        config = file.parseJson()
+        token = config["discord_token"].getStr()
+        api_token = config["xivapi_token"].getStr()
+        gid = config["guild_id"].getStr()
+    except:
+        echo("ERROR: Something is wrong with your config file. Try deleting it and run the program again to initialize it.")
 
 let discord = newDiscordClient(token)
 let client = newAsyncHttpClient()
