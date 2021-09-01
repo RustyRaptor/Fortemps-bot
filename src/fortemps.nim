@@ -1,9 +1,9 @@
 import asyncdispatch
 import httpclient
+import json
 import options
 import os
-import strutils, strformat
-import json
+import strformat, strutils
 
 import dimscord
 import dimscmd
@@ -11,35 +11,36 @@ import dimscmd/interactionUtils
 
 echo("Fortemps is loading!")
 
-var 
-    file: TaintedString
-    config: JsonNode 
-    token: string
-    api_token: string
-    gid: string
 # Load config here
 
 if fileExists("config.json") == false:
     echo("Enter Discord API Key")
-    var discord_token = readLine(stdin)
+    var discordToken: string = readLine(stdin)
     echo("Enter XIVAPI Private key")
-    var xivapi_token = readLine(stdin)
+    var xivapiToken: string = readLine(stdin)
     echo("Enter Guild ID")
-    var guild_id = readLine(stdin)
-    let config_json = %*{"discord_token": discord_token, "xivapi_token": xivapi_token, "guild_id": guild_id}
+    var guildId = readLine(stdin)
+
+    let config_json = %*
+        {
+        "discord_token": discordToken,
+        "xivapi_token": xivapiToken,
+        "guild_id": guildId
+        }
+
     writeFile("config.json", $config_json)
 
-try:
-    file = readFile("config.json")
-    config = file.parseJson()
-    token = config["discord_token"].getStr()
-    api_token = config["xivapi_token"].getStr()
-    gid = config["guild_id"].getStr()
-except:
+var config: JsonNode = readFile("config.json").parseJson()
+
+if config{"discord_token"}.isNil or config{"xivapi_token"}.isNil or config{"guild_id"}.isNil:
     echo("ERROR: Something is wrong with your config file. Try deleting it and run the program again to initialize it.")
     quit(1)
 
-echo(token)
+var
+    token: string = config{"discord_token"}.getStr()
+    apiToken: string = config{"xivapi_token"}.getStr()
+    gid: string = config{"guild_id"}.getStr()
+
 let discord = newDiscordClient(token)
 let client = newAsyncHttpClient()
 var cmd = discord.newHandler()
